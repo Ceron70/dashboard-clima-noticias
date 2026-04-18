@@ -2,9 +2,7 @@ const { Pool } = require('pg');
 
 // Conexión a Supabase (reemplaza con tu cadena)
 const pool = new Pool({
-    connectionString: 'postgresql://postgres:[Admin1234]@db.narfamgkyuzmxriynwls.supabase.co:5432/postgres
-
-',
+    connectionString: 'postgresql://postgres:Admin1234@db.narfamgkyuzmxriynwls.supabase.co:5432/postgres',
     ssl: { rejectUnauthorized: false }
 });
 
