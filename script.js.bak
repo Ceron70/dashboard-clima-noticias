@@ -1,0 +1,130 @@
+// ============================================
+// CONFIGURACIÓN
+// ============================================
+const WEATHER_API_KEY = 'bd5e378503939ddaee76f12ad7a97608';
+const NEWS_API_KEY = 'pub_93b6d1055d644301b08f457230a8a23f';
+
+// ============================================
+// ELEMENTOS DOM
+// ============================================
+const cityNameEl = document.getElementById('cityName');
+const temperatureEl = document.getElementById('temperature');
+const feelsLikeEl = document.getElementById('feelsLike');
+const humidityEl = document.getElementById('humidity');
+const windEl = document.getElementById('wind');
+const descriptionEl = document.getElementById('description');
+const weatherIconEl = document.getElementById('weatherIcon');
+const newsListEl = document.getElementById('newsList');
+
+// ============================================
+// FUNCIÓN CLIMA
+// ============================================
+async function getWeather(city) {
+    cityNameEl.textContent = 'Cargando...';
+    temperatureEl.textContent = '--';
+    
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${WEATHER_API_KEY}&units=metric&lang=es`;
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.message);
+        
+        cityNameEl.textContent = `${data.name}, ${data.sys.country}`;
+        temperatureEl.textContent = Math.round(data.main.temp);
+        feelsLikeEl.textContent = Math.round(data.main.feels_like);
+        humidityEl.textContent = data.main.humidity;
+        windEl.textContent = Math.round(data.wind.speed);
+        descriptionEl.textContent = data.weather[0].description;
+        
+        const iconCode = data.weather[0].icon;
+        weatherIconEl.innerHTML = `<img src="https://openweathermap.org/img/wn/${iconCode}@2x.png" style="width: 60px;">`;
+        
+        await getNews(data.sys.country);
+        
+    } catch (error) {
+        cityNameEl.textContent = 'Error';
+        temperatureEl.textContent = '--';
+        newsListEl.innerHTML = `<p>❌ ${error.message}</p>`;
+    }
+}
+
+// ============================================
+// FUNCIÓN NOTICIAS CON RESPALDO
+// ============================================
+async function getNews(countryCode) {
+    newsListEl.innerHTML = '<p>📰 Cargando noticias...</p>';
+    
+    try {
+        // Intento 1: Noticias del país
+        const urlCountry = `https://gnews.io/api/v4/top-headlines?country=${countryCode.toLowerCase()}&token=${NEWS_API_KEY}&lang=es&max=6`;
+        const res = await fetch(urlCountry);
+        const data = await res.json();
+        
+        if (data.articles && data.articles.length > 0) {
+            renderNews(data.articles);
+            return;
+        }
+        
+        // Intento 2: Noticias en español (cualquier país)
+        const urlGeneral = `https://gnews.io/api/v4/top-headlines?lang=es&token=${NEWS_API_KEY}&max=6`;
+        const resGeneral = await fetch(urlGeneral);
+        const dataGeneral = await resGeneral.json();
+        
+        if (dataGeneral.articles && dataGeneral.articles.length > 0) {
+            renderNews(dataGeneral.articles);
+        } else {
+            newsListEl.innerHTML = `
+                <div style="text-align: center; padding: 20px; background: white; border-radius: 15px;">
+                    <p>📭 No hay noticias disponibles</p>
+                    <p style="font-size: 0.8rem;">Intenta más tarde</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        newsListEl.innerHTML = `
+            <div style="text-align: center; padding: 20px; background: white; border-radius: 15px;">
+                <p>⚠️ Error al cargar noticias</p>
+            </div>
+        `;
+    }
+}
+
+// ============================================
+// RENDERIZAR NOTICIAS
+// ============================================
+function renderNews(articles) {
+    newsListEl.innerHTML = articles.map(article => `
+        <div class="news-card">
+            ${article.image ? `<img src="${article.image}" class="news-image" onerror="this.style.display='none'">` : ''}
+            <div class="news-content">
+                <h3>${article.title || 'Sin título'}</h3>
+                <p>${article.description ? article.description.substring(0, 100) + '...' : 'Lee más en el enlace'}</p>
+                <a href="${article.url}" target="_blank">Leer más →</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// EVENTOS
+// ============================================
+document.getElementById('searchBtn').addEventListener('click', () => {
+    const city = document.getElementById('cityInput').value.trim();
+    if (city) getWeather(city);
+});
+
+document.getElementById('cityInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const city = document.getElementById('cityInput').value.trim();
+        if (city) getWeather(city);
+    }
+});
+
+// ============================================
+// INICIO
+// ============================================
+window.addEventListener('load', () => {
+    getWeather('Buenos Aires');
+});

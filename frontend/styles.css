@@ -1,0 +1,215 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Buscador */
+.search-box {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.search-box input {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    width: 250px;
+    outline: none;
+    font-family: inherit;
+}
+
+.search-box button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    background: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: inherit;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.search-box button:hover {
+    transform: scale(1.05);
+    background: #f0f0f0;
+}
+
+/* Tarjeta del clima */
+.weather-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.weather-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.weather-header h2 {
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.weather-temp {
+    font-size: 4rem;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #667eea;
+}
+
+.weather-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.weather-info p {
+    background: #f0f0f0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.weather-desc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    text-transform: capitalize;
+    color: #555;
+}
+
+/* Noticias */
+.news-section h2 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .news-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.news-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.news-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.news-content {
+    padding: 15px;
+}
+
+.news-content h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.news-content p {
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.news-content a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.news-content a:hover {
+    text-decoration: underline;
+}
+
+/* Loader */
+.loader {
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+/* Mensajes de error */
+.error-message {
+    text-align: center;
+    color: white;
+    background: rgba(255, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clima + Noticias | Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌤️ Dashboard del Clima + Noticias</h1>
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="Ej: Madrid, Buenos Aires, Ciudad de México">
+                <button id="searchBtn">Buscar</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Tarjeta del Clima -->
+            <section class="weather-card">
+                <div class="weather-header">
+                    <h2 id="cityName">Cargando...</h2>
+                    <span id="countryFlag"></span>
+                </div>
+                <div class="weather-temp">
+                    <span id="temperature">--</span><span>°C</span>
+                </div>
+                <div class="weather-info">
+                    <p>🌡️ Sensación: <span id="feelsLike">--</span>°C</p>
+                    <p>💧 Humedad: <span id="humidity">--</span>%</p>
+                    <p>💨 Viento: <span id="wind">--</span> km/h</p>
+                </div>
+                <div class="weather-desc">
+                    <span id="weatherIcon"></span>
+                    <span id="description"></span>
+                </div>
+            </section>
+
+            <!-- Sección de Noticias -->
+            <section class="news-section">
+                <h2>📰 Noticias destacadas de la región</h2>
+                <div id="newsList" class="news-grid">
+                    <p>Cargando noticias...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

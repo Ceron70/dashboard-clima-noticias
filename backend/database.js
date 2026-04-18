@@ -1,0 +1,45 @@
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    user: 'postgres',
+    host: 'localhost',
+  database: 'clima_proyecto_db',
+    password: 'Admin1234',
+    port: 5432,
+});
+
+async function guardarBusqueda(ciudad, temperatura, humedad, pais) {
+    try {
+        const query = `
+            INSERT INTO busquedas (usuario_id, ciudad, temperatura, humedad, pais)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *
+        `;
+        const values = [1, ciudad, temperatura, humedad, pais];
+        const result = await pool.query(query, values);
+        console.log('📝 Búsqueda guardada:', ciudad);
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error al guardar:', error);
+        return null;
+    }
+}
+
+async function obtenerHistorial(limite = 10) {
+    try {
+        const query = `
+            SELECT ciudad, temperatura, humedad, pais, fecha_busqueda
+            FROM busquedas
+            WHERE usuario_id = 1
+            ORDER BY fecha_busqueda DESC
+            LIMIT $1
+        `;
+        const result = await pool.query(query, [limite]);
+        return result.rows;
+    } catch (error) {
+        console.error('Error al obtener historial:', error);
+        return [];
+    }
+}
+
+module.exports = { guardarBusqueda, obtenerHistorial };
