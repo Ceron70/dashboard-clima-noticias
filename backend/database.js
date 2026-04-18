@@ -1,11 +1,9 @@
 const { Pool } = require('pg');
 
+// Conexión a Supabase (reemplaza con tu cadena)
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-  database: 'clima_proyecto_db',
-    password: 'Admin1234',
-    port: 5432,
+    connectionString: 'postgresql://postgres:[Admin1234]@db.narfamgkyuzmxriynwls.supabase.co:5432/postgres',
+    ssl: { rejectUnauthorized: false }
 });
 
 async function guardarBusqueda(ciudad, temperatura, humedad, pais) {
@@ -17,7 +15,7 @@ async function guardarBusqueda(ciudad, temperatura, humedad, pais) {
         `;
         const values = [1, ciudad, temperatura, humedad, pais];
         const result = await pool.query(query, values);
-        console.log('📝 Búsqueda guardada:', ciudad);
+        console.log('📝 Búsqueda guardada en Supabase:', ciudad);
         return result.rows[0];
     } catch (error) {
         console.error('Error al guardar:', error);
