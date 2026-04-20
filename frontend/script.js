@@ -1,9 +1,14 @@
 // ============================================
 // CONFIGURACIÓN
 // ============================================
-const WEATHER_API_KEY = 'bd5e378503939ddaee76f12ad7a97608';
+
+//const WEATHER_API_KEY = '30fcbd3d9d709184fc40f0a241a5062d';
+
+const WEATHER_API_KEY = 'f8940eca03b9478eaf021147262004';
+
 const NEWS_API_KEY = 'pub_93b6d1055d644301b08f457230a8a23f';
-const BACKEND_URL = 'http://localhost:3000';
+//const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'https://dashboard-clima-backend-9e4e.onrender.com';
 
 // ============================================
 // ELEMENTOS DOM
@@ -39,34 +44,40 @@ async function guardarBusquedaEnDB(ciudad, temperatura, humedad, pais) {
 // ============================================
 // FUNCIÓN: OBTENER CLIMA
 // ============================================
+
 async function getWeather(city) {
     cityNameEl.textContent = 'Cargando...';
     temperatureEl.textContent = '--';
     newsListEl.innerHTML = '<p>📰 Cargando noticias...</p>';
     
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${WEATHER_API_KEY}&units=metric&lang=es`;
+    // URL para WeatherAPI
+    const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(city)}&lang=es`;
     
     try {
         const response = await fetch(url);
         const data = await response.json();
         
-        if (!response.ok) throw new Error(data.message);
+        if (!response.ok) {
+            throw new Error(data.error?.message || 'Ciudad no encontrada');
+        }
         
-        cityNameEl.textContent = `${data.name}, ${data.sys.country}`;
-        temperatureEl.textContent = Math.round(data.main.temp);
-        feelsLikeEl.textContent = Math.round(data.main.feels_like);
-        humidityEl.textContent = data.main.humidity;
-        windEl.textContent = Math.round(data.wind.speed);
-        descriptionEl.textContent = data.weather[0].description;
+        // WeatherAPI devuelve los datos en diferente formato
+        cityNameEl.textContent = `${data.location.name}, ${data.location.country}`;
+        temperatureEl.textContent = Math.round(data.current.temp_c);
+        feelsLikeEl.textContent = Math.round(data.current.feelslike_c);
+        humidityEl.textContent = data.current.humidity;
+        windEl.textContent = Math.round(data.current.wind_kph);
+        descriptionEl.textContent = data.current.condition.text;
         
-        const iconCode = data.weather[0].icon;
-        weatherIconEl.innerHTML = `<img src="https://openweathermap.org/img/wn/${iconCode}@2x.png" style="width: 60px;">`;
+        // Ícono del clima (WeatherAPI usa sus propios íconos)
+        const iconUrl = `https:${data.current.condition.icon}`;
+        weatherIconEl.innerHTML = `<img src="${iconUrl}" alt="${data.current.condition.text}" style="width: 60px;">`;
         
         // Guardar en PostgreSQL
-        await guardarBusquedaEnDB(data.name, Math.round(data.main.temp), data.main.humidity, data.sys.country);
+        await guardarBusquedaEnDB(data.location.name, Math.round(data.current.temp_c), data.current.humidity, data.location.country);
         
         // Cargar noticias del país
-        await getNews(data.sys.country);
+        await getNews(data.location.country);
         
     } catch (error) {
         console.error('Error en clima:', error);
@@ -75,6 +86,8 @@ async function getWeather(city) {
         newsListEl.innerHTML = `<p>❌ Error al cargar el clima: ${error.message}</p>`;
     }
 }
+
+
 
 // ============================================
 // FUNCIÓN: OBTENER NOTICIAS CON NEWSDATA.IO
